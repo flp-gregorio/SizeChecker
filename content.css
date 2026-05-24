@@ -1,0 +1,566 @@
+/* Inseam Scanner Content Styling */
+
+/* Variables */
+:root {
+  --iss-bg-glass: rgba(18, 20, 26, 0.85);
+  --iss-bg-glass-hover: rgba(28, 32, 42, 0.9);
+  --iss-border: rgba(255, 255, 255, 0.08);
+  --iss-border-active: rgba(0, 210, 255, 0.4);
+  
+  --iss-primary: #00d2ff;
+  --iss-primary-glow: rgba(0, 210, 255, 0.35);
+  --iss-primary-gradient: linear-gradient(135deg, #00d2ff 0%, #0066ff 100%);
+  
+  --iss-text-main: #f3f4f6;
+  --iss-text-muted: #9ca3af;
+  
+  /* Status Colors */
+  --iss-match-green: #00f5a0;
+  --iss-match-green-glow: rgba(0, 245, 160, 0.2);
+  --iss-match-yellow: #ffd000;
+  --iss-match-yellow-glow: rgba(255, 208, 0, 0.2);
+  --iss-match-red: #ff3b69;
+  --iss-match-red-glow: rgba(255, 59, 105, 0.2);
+  --iss-match-gray: #6b7280;
+  --iss-match-gray-glow: rgba(107, 114, 128, 0.2);
+}
+
+/* Floating Trigger Button */
+.iss-trigger-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--iss-primary-gradient);
+  border: none;
+  box-shadow: 0 8px 32px rgba(0, 102, 255, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.iss-trigger-btn:hover {
+  transform: scale(1.1) translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 102, 255, 0.45), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+.iss-trigger-btn:active {
+  transform: scale(0.95);
+}
+
+.iss-trigger-btn svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.4s ease;
+}
+
+.iss-trigger-btn.active svg {
+  transform: rotate(135deg);
+}
+
+/* Floating Dashboard Panel */
+.iss-dashboard {
+  position: fixed;
+  bottom: 92px;
+  right: 24px;
+  width: 330px;
+  height: 500px;
+  max-height: calc(100vh - 120px);
+  background: var(--iss-bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--iss-border);
+  border-radius: 20px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(255, 255, 255, 0.05) inset;
+  z-index: 2147483646;
+  color: var(--iss-text-main);
+  font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(30px) scale(0.95);
+  pointer-events: none;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.iss-dashboard.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: all;
+}
+
+/* Header */
+.iss-header {
+  padding: 18px 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid var(--iss-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.iss-header-title {
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  background: linear-gradient(120deg, #ffffff 40%, var(--iss-primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.iss-logo-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--iss-primary);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--iss-primary);
+  animation: iss-pulse 2s infinite;
+}
+
+.iss-close-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--iss-text-muted);
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.iss-close-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+/* Content Area */
+.iss-body {
+  padding: 20px;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.iss-section-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--iss-text-muted);
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+/* Controls / Settings */
+.iss-control-group {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--iss-border);
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.iss-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.iss-row:last-child {
+  margin-bottom: 0;
+}
+
+.iss-label {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Styled Inputs */
+.iss-number-input-wrapper {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--iss-border);
+  border-radius: 8px;
+  overflow: hidden;
+  width: 100px;
+  height: 32px;
+  transition: border-color 0.2s;
+}
+
+.iss-number-input-wrapper:focus-within {
+  border-color: var(--iss-primary);
+  box-shadow: 0 0 6px var(--iss-primary-glow);
+}
+
+.iss-number-input {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  color: #fff;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+}
+
+.iss-unit-select {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--iss-border);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 8px;
+  outline: none;
+  cursor: pointer;
+}
+
+.iss-unit-select:focus {
+  border-color: var(--iss-primary);
+}
+
+/* Slider Customization */
+.iss-slider-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.iss-slider-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.iss-slider-val {
+  color: var(--iss-primary);
+  font-weight: 600;
+}
+
+.iss-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 5px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  outline: none;
+}
+
+.iss-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--iss-primary);
+  box-shadow: 0 0 8px var(--iss-primary-glow);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.iss-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+/* Toggle Switch */
+.iss-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 22px;
+}
+
+.iss-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.iss-slider-toggle {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: .4s;
+  border-radius: 34px;
+  border: 1px solid var(--iss-border);
+}
+
+.iss-slider-toggle:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+}
+
+.iss-switch input:checked + .iss-slider-toggle {
+  background: var(--iss-primary-gradient);
+}
+
+.iss-switch input:checked + .iss-slider-toggle:before {
+  transform: translateX(22px);
+}
+
+/* Buttons */
+.iss-primary-btn {
+  background: var(--iss-primary-gradient);
+  border: none;
+  color: #fff;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  box-shadow: 0 4px 16px rgba(0, 102, 255, 0.2);
+}
+
+.iss-primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 102, 255, 0.35);
+}
+
+.iss-primary-btn:active {
+  transform: translateY(0);
+}
+
+/* Statistics Box */
+.iss-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.iss-stat-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--iss-border);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.iss-stat-num {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.iss-stat-num.match-perfect { color: var(--iss-match-green); }
+.iss-stat-num.match-close { color: var(--iss-match-yellow); }
+
+.iss-stat-lbl {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--iss-text-muted);
+}
+
+/* Scanned Product List */
+.iss-scanned-list {
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--iss-border);
+  border-radius: 12px;
+  padding: 10px;
+  max-height: 160px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.iss-scanned-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.iss-scanned-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+.iss-scanned-thumb {
+  width: 24px;
+  height: 32px;
+  border-radius: 4px;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.iss-scanned-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--iss-text-main);
+  text-decoration: none;
+}
+
+.iss-scanned-title:hover {
+  text-decoration: underline;
+  color: var(--iss-primary);
+}
+
+.iss-scanned-val {
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Status colors */
+.iss-badge-perfect {
+  background: var(--iss-match-green-glow);
+  color: var(--iss-match-green);
+  border: 1px solid rgba(0, 245, 160, 0.3);
+}
+
+.iss-badge-close {
+  background: var(--iss-match-yellow-glow);
+  color: var(--iss-match-yellow);
+  border: 1px solid rgba(255, 208, 0, 0.3);
+}
+
+.iss-badge-far {
+  background: var(--iss-match-red-glow);
+  color: var(--iss-match-red);
+  border: 1px solid rgba(255, 59, 105, 0.3);
+}
+
+.iss-badge-none {
+  background: var(--iss-match-gray-glow);
+  color: var(--iss-text-muted);
+  border: 1px solid rgba(107, 114, 128, 0.3);
+}
+
+/* Injected Product Card Button / Badge */
+.iss-card-overlay {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 99;
+  pointer-events: auto;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.25));
+  animation: iss-fade-in 0.3s ease;
+}
+
+.iss-card-scan-btn {
+  background: rgba(18, 20, 26, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--iss-border);
+  color: #fff;
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.iss-card-scan-btn:hover {
+  background: #00d2ff;
+  color: #12141a;
+  border-color: #00d2ff;
+  transform: translateY(-1px);
+}
+
+/* Scanned badge on product card */
+.iss-card-result-badge {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Mini Loader */
+.iss-spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: iss-spin 0.8s linear infinite;
+}
+
+/* Animations */
+@keyframes iss-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes iss-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(0, 210, 255, 0.5); }
+  70% { box-shadow: 0 0 0 6px rgba(0, 210, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 210, 255, 0); }
+}
+
+@keyframes iss-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scrollbar styles for list */
+.iss-scanned-list::-webkit-scrollbar {
+  width: 4px;
+}
+.iss-scanned-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.01);
+}
+.iss-scanned-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+}
+.iss-scanned-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}

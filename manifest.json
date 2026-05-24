@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Inseam Scanner",
+  "version": "1.0",
+  "description": "Adds a scanning button to product search pages.",
+  "permissions": [
+    "scripting",
+    "tabs",
+    "storage"
+  ],
+  "host_permissions": [
+    "*://*.shein.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://*.shein.com/*"],
+      "js": ["content.js"],
+      "css": ["content.css"]
+    }
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "inseam-scanner@example.com"
+    }
+  }
+}
