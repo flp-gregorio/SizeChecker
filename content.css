@@ -2,27 +2,27 @@
 
 /* Variables */
 :root {
-  --iss-bg-glass: rgba(18, 20, 26, 0.85);
-  --iss-bg-glass-hover: rgba(28, 32, 42, 0.9);
-  --iss-border: rgba(255, 255, 255, 0.08);
-  --iss-border-active: rgba(0, 210, 255, 0.4);
+  --iss-bg-glass: #000000;
+  --iss-bg-glass-hover: #111111;
+  --iss-border: transparent;
+  --iss-border-active: #9d00ff;
   
-  --iss-primary: #00d2ff;
-  --iss-primary-glow: rgba(0, 210, 255, 0.35);
-  --iss-primary-gradient: linear-gradient(135deg, #00d2ff 0%, #0066ff 100%);
+  --iss-primary: #9d00ff;
+  --iss-primary-glow: #9d00ff;
+  --iss-primary-gradient: #9d00ff;
   
-  --iss-text-main: #f3f4f6;
-  --iss-text-muted: #9ca3af;
+  --iss-text-main: #ffffff;
+  --iss-text-muted: #aaaaaa;
   
   /* Status Colors */
-  --iss-match-green: #00f5a0;
-  --iss-match-green-glow: rgba(0, 245, 160, 0.2);
-  --iss-match-yellow: #ffd000;
-  --iss-match-yellow-glow: rgba(255, 208, 0, 0.2);
-  --iss-match-red: #ff3b69;
-  --iss-match-red-glow: rgba(255, 59, 105, 0.2);
-  --iss-match-gray: #6b7280;
-  --iss-match-gray-glow: rgba(107, 114, 128, 0.2);
+  --iss-match-green: #00cc00;
+  --iss-match-green-glow: #003300;
+  --iss-match-yellow: #cccc00;
+  --iss-match-yellow-glow: #333300;
+  --iss-match-red: #cc0000;
+  --iss-match-red-glow: #330000;
+  --iss-match-gray: #666666;
+  --iss-match-gray-glow: #222222;
 }
 
 /* Floating Trigger Button */
@@ -32,10 +32,8 @@
   right: 24px;
   width: 56px;
   height: 56px;
-  border-radius: 50%;
-  background: var(--iss-primary-gradient);
+  background: var(--iss-primary);
   border: none;
-  box-shadow: 0 8px 32px rgba(0, 102, 255, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.2);
   cursor: pointer;
   z-index: 2147483647;
   display: flex;
@@ -46,7 +44,7 @@
 
 .iss-trigger-btn:hover {
   transform: scale(1.1) translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0, 102, 255, 0.45), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+  background: #b84dff;
 }
 
 .iss-trigger-btn:active {
@@ -77,11 +75,7 @@
   height: 500px;
   max-height: calc(100vh - 120px);
   background: var(--iss-bg-glass);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--iss-border);
-  border-radius: 20px;
-  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(255, 255, 255, 0.05) inset;
+  border: none;
   z-index: 2147483646;
   color: var(--iss-text-main);
   font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -103,8 +97,8 @@
 /* Header */
 .iss-header {
   padding: 18px 20px;
-  background: rgba(255, 255, 255, 0.02);
-  border-bottom: 1px solid var(--iss-border);
+  background: #111111;
+  border: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -114,9 +108,7 @@
   font-weight: 700;
   font-size: 16px;
   letter-spacing: -0.01em;
-  background: linear-gradient(120deg, #ffffff 40%, var(--iss-primary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--iss-primary);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -126,9 +118,6 @@
   width: 8px;
   height: 8px;
   background-color: var(--iss-primary);
-  border-radius: 50%;
-  box-shadow: 0 0 8px var(--iss-primary);
-  animation: iss-pulse 2s infinite;
 }
 
 .iss-close-btn {
@@ -140,12 +129,11 @@
   align-items: center;
   justify-content: center;
   color: var(--iss-text-muted);
-  border-radius: 50%;
   transition: all 0.2s;
 }
 
 .iss-close-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: #222222;
   color: #fff;
 }
 
@@ -170,9 +158,8 @@
 
 /* Controls / Settings */
 .iss-control-group {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--iss-border);
-  border-radius: 12px;
+  background: #111111;
+  border: none;
   padding: 14px;
 }
 
@@ -196,18 +183,16 @@
 .iss-number-input-wrapper {
   display: flex;
   align-items: center;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--iss-border);
-  border-radius: 8px;
+  background: #222222;
+  border: none;
   overflow: hidden;
   width: 100px;
   height: 32px;
-  transition: border-color 0.2s;
+  transition: background-color 0.2s;
 }
 
 .iss-number-input-wrapper:focus-within {
-  border-color: var(--iss-primary);
-  box-shadow: 0 0 6px var(--iss-primary-glow);
+  background: #333333;
 }
 
 .iss-number-input {
@@ -223,10 +208,9 @@
 }
 
 .iss-unit-select {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--iss-border);
+  background: #222222;
+  border: none;
   color: #fff;
-  border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
   padding: 4px 8px;
@@ -235,7 +219,7 @@
 }
 
 .iss-unit-select:focus {
-  border-color: var(--iss-primary);
+  background: #333333;
 }
 
 /* Slider Customization */
@@ -260,8 +244,7 @@
   -webkit-appearance: none;
   width: 100%;
   height: 5px;
-  border-radius: 5px;
-  background: rgba(255, 255, 255, 0.1);
+  background: #333333;
   outline: none;
 }
 
@@ -270,9 +253,7 @@
   appearance: none;
   width: 15px;
   height: 15px;
-  border-radius: 50%;
   background: var(--iss-primary);
-  box-shadow: 0 0 8px var(--iss-primary-glow);
   cursor: pointer;
   transition: transform 0.1s;
 }
@@ -302,10 +283,9 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: #333333;
   transition: .4s;
-  border-radius: 34px;
-  border: 1px solid var(--iss-border);
+  border: none;
 }
 
 .iss-slider-toggle:before {
@@ -314,27 +294,25 @@
   height: 14px;
   width: 14px;
   left: 3px;
-  bottom: 3px;
+  bottom: 4px;
   background-color: white;
   transition: .3s;
-  border-radius: 50%;
 }
 
 .iss-switch input:checked + .iss-slider-toggle {
-  background: var(--iss-primary-gradient);
+  background: var(--iss-primary);
 }
 
 .iss-switch input:checked + .iss-slider-toggle:before {
-  transform: translateX(22px);
+  transform: translateX(24px);
 }
 
 /* Buttons */
 .iss-primary-btn {
-  background: var(--iss-primary-gradient);
+  background: var(--iss-primary);
   border: none;
   color: #fff;
   padding: 12px;
-  border-radius: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -343,12 +321,11 @@
   justify-content: center;
   gap: 8px;
   font-size: 14px;
-  box-shadow: 0 4px 16px rgba(0, 102, 255, 0.2);
 }
 
 .iss-primary-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 102, 255, 0.35);
+  background: #b84dff;
 }
 
 .iss-primary-btn:active {
@@ -356,12 +333,11 @@
 }
 
 .iss-primary-btn.iss-btn-stop {
-  background: linear-gradient(135deg, #ff3b69 0%, #ff0040 100%);
-  box-shadow: 0 4px 16px rgba(255, 59, 105, 0.2);
+  background: #cc0000;
 }
 
 .iss-primary-btn.iss-btn-stop:hover {
-  box-shadow: 0 6px 20px rgba(255, 59, 105, 0.35);
+  background: #ff3333;
 }
 
 /* Statistics Box */
@@ -372,9 +348,8 @@
 }
 
 .iss-stat-card {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--iss-border);
-  border-radius: 10px;
+  background: #111111;
+  border: none;
   padding: 10px;
   text-align: center;
   display: flex;
@@ -386,14 +361,11 @@
 }
 
 .iss-stat-card:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.15);
+  background: #222222;
 }
 
 .iss-stat-card.active {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: var(--iss-primary);
-  box-shadow: 0 0 8px var(--iss-primary-glow);
+  background: #333333;
 }
 
 .iss-stat-num {
@@ -413,9 +385,8 @@
 
 /* Scanned Product List */
 .iss-scanned-list {
-  background: rgba(0, 0, 0, 0.15);
-  border: 1px solid var(--iss-border);
-  border-radius: 12px;
+  background: #111111;
+  border: none;
   padding: 10px;
   max-height: 160px;
   overflow-y: auto;
@@ -429,8 +400,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 6px 8px;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 6px;
+  background: #222222;
   font-size: 12px;
 }
 
@@ -447,9 +417,8 @@
 .iss-scanned-thumb {
   width: 24px;
   height: 32px;
-  border-radius: 4px;
   object-fit: cover;
-  background: rgba(255, 255, 255, 0.05);
+  background: #333333;
 }
 
 .iss-scanned-title {
@@ -467,32 +436,31 @@
 .iss-scanned-val {
   font-weight: 600;
   padding: 2px 6px;
-  border-radius: 4px;
 }
 
 /* Status colors */
 .iss-badge-perfect {
   background: var(--iss-match-green-glow);
   color: var(--iss-match-green);
-  border: 1px solid rgba(0, 245, 160, 0.3);
+  border: none;
 }
 
 .iss-badge-close {
   background: var(--iss-match-yellow-glow);
   color: var(--iss-match-yellow);
-  border: 1px solid rgba(255, 208, 0, 0.3);
+  border: none;
 }
 
 .iss-badge-far {
   background: var(--iss-match-red-glow);
   color: var(--iss-match-red);
-  border: 1px solid rgba(255, 59, 105, 0.3);
+  border: none;
 }
 
 .iss-badge-none {
   background: var(--iss-match-gray-glow);
   color: var(--iss-text-muted);
-  border: 1px solid rgba(107, 114, 128, 0.3);
+  border: none;
 }
 
 /* Injected Product Card Button / Badge */
@@ -503,17 +471,13 @@
   z-index: 99;
   pointer-events: auto;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.25));
   animation: iss-fade-in 0.3s ease;
 }
 
 .iss-card-scan-btn {
-  background: rgba(18, 20, 26, 0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid var(--iss-border);
+  background: #000000;
+  border: none;
   color: #fff;
-  border-radius: 20px;
   padding: 6px 12px;
   font-size: 11px;
   font-weight: 600;
@@ -522,37 +486,31 @@
   align-items: center;
   gap: 6px;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .iss-card-scan-btn:hover {
-  background: #00d2ff;
-  color: #12141a;
-  border-color: #00d2ff;
+  background: var(--iss-primary);
+  color: #000000;
   transform: translateY(-1px);
 }
 
 /* Scanned badge on product card */
 .iss-card-result-badge {
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-radius: 20px;
+  background: #000000;
   padding: 6px 12px;
   font-size: 11px;
   font-weight: 700;
   display: flex;
   align-items: center;
   gap: 5px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Mini Loader */
 .iss-spinner {
   width: 12px;
   height: 12px;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 2px solid #333333;
   border-top-color: #fff;
-  border-radius: 50%;
   animation: iss-spin 0.8s linear infinite;
 }
 
@@ -560,12 +518,6 @@
 @keyframes iss-spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-@keyframes iss-pulse {
-  0% { box-shadow: 0 0 0 0 rgba(0, 210, 255, 0.5); }
-  70% { box-shadow: 0 0 0 6px rgba(0, 210, 255, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(0, 210, 255, 0); }
 }
 
 @keyframes iss-fade-in {
@@ -578,12 +530,11 @@
   width: 4px;
 }
 .iss-scanned-list::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.01);
+  background: #111111;
 }
 .iss-scanned-list::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 2px;
+  background: #333333;
 }
 .iss-scanned-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: #555555;
 }
