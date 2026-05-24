@@ -23,7 +23,10 @@
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "inseam-scanner@example.com"
+      "id": "inseam-scanner@example.com",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
     }
   }
 }

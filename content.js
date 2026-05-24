@@ -120,7 +120,7 @@
     const container = document.createElement('div');
     container.id = 'iss-dashboard-container';
     
-    // Injected elements markup
+    // Injected elements markup (completely static to avoid AMO security warnings)
     container.innerHTML = `
       <div class="iss-dashboard" id="iss-dashboard-panel">
         <div class="iss-header">
@@ -143,11 +143,11 @@
               <span class="iss-label">Target Inseam</span>
               <div style="display: flex; gap: 6px; align-items: center;">
                 <div class="iss-number-input-wrapper">
-                  <input type="number" step="0.5" class="iss-number-input" id="iss-target-val" value="${state.targetInseam}">
+                  <input type="number" step="0.5" class="iss-number-input" id="iss-target-val">
                 </div>
                 <select class="iss-unit-select" id="iss-unit-select">
-                  <option value="in" ${state.unit === 'in' ? 'selected' : ''}>in</option>
-                  <option value="cm" ${state.unit === 'cm' ? 'selected' : ''}>cm</option>
+                  <option value="in">in</option>
+                  <option value="cm">cm</option>
                 </select>
               </div>
             </div>
@@ -155,9 +155,9 @@
             <div class="iss-slider-container" style="margin-top: 14px;">
               <div class="iss-slider-header">
                 <span>Tolerance Range</span>
-                <span class="iss-slider-val" id="iss-tol-val-display">±${state.tolerance} ${state.unit}</span>
+                <span class="iss-slider-val" id="iss-tol-val-display"></span>
               </div>
-              <input type="range" min="0.1" max="3" step="0.1" class="iss-slider" id="iss-tolerance-slider" value="${state.tolerance}">
+              <input type="range" class="iss-slider" id="iss-tolerance-slider">
             </div>
           </div>
           
@@ -166,7 +166,7 @@
             <div class="iss-row">
               <span class="iss-label">Auto-Scan on Scroll</span>
               <label class="iss-switch">
-                <input type="checkbox" id="iss-auto-scan-toggle" ${state.autoScan ? 'checked' : ''}>
+                <input type="checkbox" id="iss-auto-scan-toggle">
                 <span class="iss-slider-toggle"></span>
               </label>
             </div>
@@ -242,6 +242,24 @@
     `;
 
     document.body.appendChild(container);
+
+    // Initialize state values programmatically to avoid dynamic innerHTML assignments (AMO security guideline)
+    document.getElementById('iss-target-val').value = state.targetInseam;
+    document.getElementById('iss-unit-select').value = state.unit;
+    document.getElementById('iss-tol-val-display').textContent = `±${state.tolerance} ${state.unit}`;
+    
+    const tolSlider = document.getElementById('iss-tolerance-slider');
+    if (state.unit === 'cm') {
+      tolSlider.min = '0.2';
+      tolSlider.max = '8';
+      tolSlider.step = '0.2';
+    } else {
+      tolSlider.min = '0.1';
+      tolSlider.max = '3';
+      tolSlider.step = '0.1';
+    }
+    tolSlider.value = state.tolerance;
+    document.getElementById('iss-auto-scan-toggle').checked = state.autoScan;
 
     // Bind Event Listeners
     const triggerBtn = document.getElementById('iss-trigger-btn');
@@ -890,11 +908,12 @@
       });
     }
 
-    overlay.innerHTML = `
-      <div class="iss-card-result-badge iss-badge-${match.status}" title="${tooltip}">
-        ${match.label}
-      </div>
-    `;
+    overlay.textContent = ''; // Clear previous scan state/button safely
+    const badge = document.createElement('div');
+    badge.className = `iss-card-result-badge iss-badge-${match.status}`;
+    badge.title = tooltip;
+    badge.textContent = match.label;
+    overlay.appendChild(badge);
   }
 
   // Update all card badges when target inseam or units change
@@ -973,17 +992,30 @@
     row.className = 'iss-scanned-item';
     row.id = `iss-item-${productId}`;
     
-    row.innerHTML = `
-      <div class="iss-scanned-info">
-        <img src="${scanResult.imageUrl}" class="iss-scanned-thumb" alt="thumb">
-        <a href="${scanResult.productUrl}" target="_blank" class="iss-scanned-title" title="${scanResult.title}">
-          ${scanResult.title}
-        </a>
-      </div>
-      <span class="iss-scanned-val iss-badge-${match.status}">
-        ${match.label}
-      </span>
-    `;
+    const scannedInfo = document.createElement('div');
+    scannedInfo.className = 'iss-scanned-info';
+
+    const img = document.createElement('img');
+    img.className = 'iss-scanned-thumb';
+    img.alt = 'thumb';
+    img.src = scanResult.imageUrl;
+
+    const link = document.createElement('a');
+    link.className = 'iss-scanned-title';
+    link.target = '_blank';
+    link.href = scanResult.productUrl;
+    link.title = scanResult.title;
+    link.textContent = scanResult.title;
+
+    scannedInfo.appendChild(img);
+    scannedInfo.appendChild(link);
+
+    const valSpan = document.createElement('span');
+    valSpan.className = `iss-scanned-val iss-badge-${match.status}`;
+    valSpan.textContent = match.label;
+
+    row.appendChild(scannedInfo);
+    row.appendChild(valSpan);
 
     // Add to top of list
     list.insertBefore(row, list.firstChild);
