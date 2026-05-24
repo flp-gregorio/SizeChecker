@@ -14,7 +14,8 @@
     targetInseam: 30,
     unit: 'in',
     tolerance: 0.5,
-    autoScan: false
+    autoScan: false,
+    currentFilter: 'all' // 'all', 'perfect', or 'close'
   };
 
   // Keep track of scanned products in current session
@@ -34,11 +35,23 @@
       
       this.queue.push({ productId, scanFn });
       this.process();
+      updateScanButtonState();
+    }
+
+    clear() {
+      const clearedIds = this.queue.map(item => item.productId);
+      this.queue = [];
+      updateScanButtonState();
+      return clearedIds;
     }
 
     async process() {
-      if (this.running || this.queue.length === 0) return;
+      if (this.running || this.queue.length === 0) {
+        updateScanButtonState();
+        return;
+      }
       this.running = true;
+      updateScanButtonState();
 
       const { productId, scanFn } = this.queue.shift();
       try {
@@ -51,6 +64,7 @@
       setTimeout(() => {
         this.running = false;
         this.process();
+        updateScanButtonState();
       }, this.delayMs);
     }
   }
@@ -176,15 +190,15 @@
           <div>
             <div class="iss-section-title">Scan Statistics</div>
             <div class="iss-stats">
-              <div class="iss-stat-card">
+              <div class="iss-stat-card active" id="iss-btn-filter-all">
                 <span class="iss-stat-num" id="iss-stat-total">0</span>
                 <span class="iss-stat-lbl">Scanned</span>
               </div>
-              <div class="iss-stat-card">
+              <div class="iss-stat-card" id="iss-btn-filter-perfect">
                 <span class="iss-stat-num match-perfect" id="iss-stat-perfect">0</span>
                 <span class="iss-stat-lbl">Matches</span>
               </div>
-              <div class="iss-stat-card">
+              <div class="iss-stat-card" id="iss-btn-filter-close">
                 <span class="iss-stat-num match-close" id="iss-stat-close">0</span>
                 <span class="iss-stat-lbl">Close</span>
               </div>
@@ -223,7 +237,11 @@
             </button>
             
             <div style="display: flex; gap: 10px; justify-content: space-between; font-size: 10px;">
-              <a href="#" style="color: var(--iss-text-muted); text-decoration: none;" id="iss-clear-cache-lnk">Clear Cache</a>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <a href="#" style="color: var(--iss-text-muted); text-decoration: none;" id="iss-clear-cache-lnk">Clear Cache</a>
+                <span style="color: var(--iss-border); width: 1px; height: 10px; background-color: currentColor; display: inline-block;"></span>
+                <a href="#" style="color: var(--iss-text-muted); text-decoration: none;" id="iss-clear-na-lnk" title="Clear only results with no size info">Clear N/As</a>
+              </div>
               <span style="color: var(--iss-text-muted);" id="iss-cache-count">0 items cached</span>
             </div>
           </div>
@@ -333,11 +351,39 @@
     autoScanToggle.addEventListener('change', saveSettings);
 
     // Operations
-    document.getElementById('iss-scan-all-btn').addEventListener('click', scanAllVisibleProducts);
+    document.getElementById('iss-scan-all-btn').addEventListener('click', () => {
+      const isScanning = scanQueue.queue.length > 0 || scanQueue.running;
+      if (isScanning) {
+        stopScanning();
+      } else {
+        scanAllVisibleProducts();
+      }
+    });
     document.getElementById('iss-clear-cache-lnk').addEventListener('click', (e) => {
       e.preventDefault();
       clearCache();
     });
+    document.getElementById('iss-clear-na-lnk').addEventListener('click', (e) => {
+      e.preventDefault();
+      clearNaResults();
+    });
+
+    // Filter click listeners
+    const filterAllBtn = document.getElementById('iss-btn-filter-all');
+    const filterPerfectBtn = document.getElementById('iss-btn-filter-perfect');
+    const filterCloseBtn = document.getElementById('iss-btn-filter-close');
+
+    const updateFilterVisuals = (activeFilter) => {
+      state.currentFilter = activeFilter;
+      filterAllBtn.classList.toggle('active', activeFilter === 'all');
+      filterPerfectBtn.classList.toggle('active', activeFilter === 'perfect');
+      filterCloseBtn.classList.toggle('active', activeFilter === 'close');
+      refreshHistoryList();
+    };
+
+    filterAllBtn.addEventListener('click', () => updateFilterVisuals('all'));
+    filterPerfectBtn.addEventListener('click', () => updateFilterVisuals('perfect'));
+    filterCloseBtn.addEventListener('click', () => updateFilterVisuals('close'));
 
     // Toggle logs console
     const toggleLogs = document.getElementById('iss-toggle-logs');
@@ -358,6 +404,7 @@
     const productLinks = document.querySelectorAll('a[href*="-p-"]');
     
     productLinks.forEach(link => {
+      if (link.closest('#iss-dashboard-container')) return;
       const href = link.getAttribute('href');
       const match = href.match(PRODUCT_ID_REGEX);
       if (!match) return;
@@ -978,6 +1025,12 @@
 
   // Add parsed product info to dashboard history
   function addToScannedHistory(productId, scanResult) {
+    const match = evaluateInseamMatch(scanResult.inseamList);
+    
+    // If filter is active and the new scan doesn't match, do not add it to the UI list
+    if (state.currentFilter === 'perfect' && match.status !== 'perfect') return;
+    if (state.currentFilter === 'close' && match.status !== 'close') return;
+
     const list = document.getElementById('iss-scanned-list-container');
     const emptyMsg = document.getElementById('iss-empty-scanned');
     if (emptyMsg) emptyMsg.remove();
@@ -986,8 +1039,6 @@
     const existing = document.getElementById(`iss-item-${productId}`);
     if (existing) existing.remove();
 
-    const match = evaluateInseamMatch(scanResult.inseamList);
-    
     const row = document.createElement('div');
     row.className = 'iss-scanned-item';
     row.id = `iss-item-${productId}`;
@@ -1027,16 +1078,29 @@
     list.innerHTML = '';
     
     const items = Object.values(sessionScans).sort((a, b) => a.scannedAt - b.scannedAt);
-    if (items.length === 0) {
+    
+    const filteredItems = items.filter(item => {
+      const match = evaluateInseamMatch(item.inseamList);
+      if (state.currentFilter === 'perfect') {
+        return match.status === 'perfect';
+      }
+      if (state.currentFilter === 'close') {
+        return match.status === 'close';
+      }
+      return true; // 'all'
+    });
+
+    if (filteredItems.length === 0) {
+      const filterLabel = state.currentFilter === 'all' ? 'scanned yet' : `found for "${state.currentFilter}" filter`;
       list.innerHTML = `
         <div style="text-align: center; color: var(--iss-text-muted); font-size: 11px; padding: 20px 0;" id="iss-empty-scanned">
-          No items scanned yet
+          No items ${filterLabel}
         </div>
       `;
       return;
     }
 
-    items.forEach(scanResult => {
+    filteredItems.forEach(scanResult => {
       addToScannedHistory(scanResult.productId, scanResult);
     });
   }
@@ -1537,32 +1601,7 @@
         // Reset card elements back to "Scan"
         const overlays = document.querySelectorAll('.iss-card-overlay');
         overlays.forEach(overlay => {
-          const productId = overlay.dataset.productId;
-          const card = overlay.parentElement;
-          const link = card.querySelector('a[href*="-p-"]');
-          if (!link) return;
-          
-          const details = {
-            productId,
-            productUrl: link.href,
-            imageUrl: getCardImage(card),
-            title: getCardTitle(card),
-            card
-          };
-
-          overlay.innerHTML = `
-            <button class="iss-card-scan-btn" title="Scan detailed sizes for this product">
-              <span class="iss-spinner" style="display:none"></span>
-              <span>Scan</span>
-            </button>
-          `;
-
-          const scanBtn = overlay.querySelector('.iss-card-scan-btn');
-          scanBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            scanSingleProduct(details);
-          });
+          resetOverlayToScan(overlay, overlay.dataset.productId);
         });
 
         refreshHistoryList();
@@ -1570,6 +1609,118 @@
         updateCacheIndicator();
       });
     });
+  }
+
+  // Reset card overlay back to "Scan" state
+  function resetOverlayToScan(overlay, productId) {
+    if (!overlay) return;
+    const card = overlay.parentElement;
+    if (!card) return;
+    const link = card.querySelector('a[href*="-p-"]');
+    if (!link) return;
+    
+    const details = {
+      productId,
+      productUrl: link.href,
+      imageUrl: getCardImage(card),
+      title: getCardTitle(card),
+      card
+    };
+
+    overlay.innerHTML = `
+      <button class="iss-card-scan-btn" title="Scan detailed sizes for this product">
+        <span class="iss-spinner" style="display:none"></span>
+        <span>Scan</span>
+      </button>
+    `;
+
+    const scanBtn = overlay.querySelector('.iss-card-scan-btn');
+    scanBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      scanSingleProduct(details);
+    });
+  }
+
+  // Clear session & storage cache records that returned N/A
+  async function clearNaResults() {
+    if (typeof chrome === 'undefined' || !chrome.storage || !chrome.storage.local) return;
+
+    logToUI("Clearing N/A scan results...", 'info');
+    
+    const naProductIds = Object.keys(sessionScans).filter(productId => {
+      const scanResult = sessionScans[productId];
+      const match = evaluateInseamMatch(scanResult.inseamList);
+      return match.status === 'none';
+    });
+
+    if (naProductIds.length === 0) {
+      logToUI("No N/A results to clear.", 'info');
+      return;
+    }
+
+    const keysToRemove = naProductIds.map(id => `iss_cache_${id}`);
+    chrome.storage.local.remove(keysToRemove, () => {
+      // Remove from sessionScans and reset badges
+      naProductIds.forEach(id => {
+        delete sessionScans[id];
+        
+        const overlay = document.querySelector(`.iss-card-overlay[data-product-id="${id}"]`) || 
+                        Array.from(document.querySelectorAll('.iss-card-overlay')).find(el => el.dataset.productId === id);
+        if (overlay) {
+          resetOverlayToScan(overlay, id);
+        }
+      });
+
+      logToUI(`Cleared ${naProductIds.length} N/A results.`, 'success');
+      refreshHistoryList();
+      updateStatistics();
+      updateCacheIndicator();
+    });
+  }
+
+  // Stops the scanning queue and resets loading indicators on cards
+  function stopScanning() {
+    logToUI("Scan queue stopped by user.", 'warn');
+    const clearedIds = scanQueue.clear();
+
+    const overlays = document.querySelectorAll('.iss-card-overlay');
+    overlays.forEach(overlay => {
+      const productId = overlay.dataset.productId;
+      const btn = overlay.querySelector('.iss-card-scan-btn');
+      if (btn && btn.textContent.includes('Scanning')) {
+        resetOverlayToScan(overlay, productId);
+      }
+    });
+
+    updateScanButtonState();
+  }
+
+  // Toggles the bulk scan button label, color class, and actions
+  function updateScanButtonState() {
+    const btn = document.getElementById('iss-scan-all-btn');
+    if (!btn) return;
+
+    const isScanning = scanQueue.queue.length > 0 || scanQueue.running;
+    if (isScanning) {
+      btn.classList.add('iss-btn-stop');
+      const count = scanQueue.queue.length;
+      btn.innerHTML = `
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
+        </svg>
+        Stop Scanning (${count} left)
+      `;
+    } else {
+      btn.classList.remove('iss-btn-stop');
+      btn.innerHTML = `
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="m9 12 2 2 4-4"></path>
+        </svg>
+        Scan All Visible Items
+      `;
+    }
   }
 
   // Load implementation

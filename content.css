@@ -73,7 +73,7 @@
   position: fixed;
   bottom: 92px;
   right: 24px;
-  width: 330px;
+  width: 400px;
   height: 500px;
   max-height: calc(100vh - 120px);
   background: var(--iss-bg-glass);
@@ -355,6 +355,15 @@
   transform: translateY(0);
 }
 
+.iss-primary-btn.iss-btn-stop {
+  background: linear-gradient(135deg, #ff3b69 0%, #ff0040 100%);
+  box-shadow: 0 4px 16px rgba(255, 59, 105, 0.2);
+}
+
+.iss-primary-btn.iss-btn-stop:hover {
+  box-shadow: 0 6px 20px rgba(255, 59, 105, 0.35);
+}
+
 /* Statistics Box */
 .iss-stats {
   display: grid;
@@ -371,6 +380,20 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.iss-stat-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.iss-stat-card.active {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--iss-primary);
+  box-shadow: 0 0 8px var(--iss-primary-glow);
 }
 
 .iss-stat-num {
@@ -418,7 +441,7 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  max-width: 180px;
+  max-width: 250px;
 }
 
 .iss-scanned-thumb {
