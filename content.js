@@ -1092,11 +1092,15 @@
 
     if (filteredItems.length === 0) {
       const filterLabel = state.currentFilter === 'all' ? 'scanned yet' : `found for "${state.currentFilter}" filter`;
-      list.innerHTML = `
-        <div style="text-align: center; color: var(--iss-text-muted); font-size: 11px; padding: 20px 0;" id="iss-empty-scanned">
-          No items ${filterLabel}
-        </div>
-      `;
+      list.textContent = '';
+      const emptyDiv = document.createElement('div');
+      emptyDiv.style.textAlign = 'center';
+      emptyDiv.style.color = 'var(--iss-text-muted)';
+      emptyDiv.style.fontSize = '11px';
+      emptyDiv.style.padding = '20px 0';
+      emptyDiv.id = 'iss-empty-scanned';
+      emptyDiv.textContent = `No items ${filterLabel}`;
+      list.appendChild(emptyDiv);
       return;
     }
 
@@ -1709,8 +1713,9 @@
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
         </svg>
-        Stop Scanning (${count} left)
+        <span class="iss-btn-text"></span>
       `;
+      btn.querySelector('.iss-btn-text').textContent = `Stop Scanning (${count} left)`;
     } else {
       btn.classList.remove('iss-btn-stop');
       btn.innerHTML = `
